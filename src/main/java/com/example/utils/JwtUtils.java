@@ -28,7 +28,7 @@ public class JwtUtils {
 
     private String createToken(Map<String, Object> claims, String subject) {
         Date now = new Date(System.currentTimeMillis());
-        Date until = new Date(System.currentTimeMillis() + 1000 * 60 * 60);// 20 hours
+        Date until = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10);// 20 hours
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(now).setExpiration(until)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY).compact();
 
