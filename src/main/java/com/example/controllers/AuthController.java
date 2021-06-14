@@ -4,11 +4,14 @@ import com.example.models.AuthenticationRequest;
 import com.example.models.AuthenticationResponse;
 import com.example.models.UserModal;
 import com.example.repositories.UserRepository;
+import com.example.services.UserService;
+import com.example.utils.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,12 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @PostMapping("/subs")
     private ResponseEntity<?> subscribeClient(@RequestBody AuthenticationRequest authenticationRequest) {
@@ -54,6 +63,11 @@ public class AuthController {
 
             return ResponseEntity.ok(new AuthenticationResponse("Error authenticating client" + username));
         }
-        return ResponseEntity.ok(new AuthenticationResponse("Successful authentication for client" + username));
+
+        UserDetails loadedUser = userService.loadUserByUsername(username);
+
+        String generateToken = jwtUtils.generateToken(loadedUser);
+
+        return ResponseEntity.ok(new AuthenticationResponse(generateToken));
     }
 }
