@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +32,11 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
+
+    @GetMapping("/dashboard")
+    private String test() {
+        return "Welcome to the DASHBOARD " + SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @PostMapping("/subs")
     private ResponseEntity<?> subscribeClient(@RequestBody AuthenticationRequest authenticationRequest) {
